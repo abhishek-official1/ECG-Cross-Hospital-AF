@@ -1,0 +1,95 @@
+\errorcontextlines=999
+\documentclass[10pt]{article}
+\usepackage[a3paper,portrait,margin=0mm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor,graphicx,booktabs,array}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Cross-domain AF detection with deep learning},pdfauthor={Deep Learning Project},pdfsubject={A3 portrait research poster; exploratory external evaluation}}
+\definecolor{ink}{HTML}{102C34}
+\definecolor{paper}{HTML}{F6F7F4}
+\definecolor{teal}{HTML}{087E83}
+\definecolor{mint}{HTML}{A0DFCF}
+\definecolor{muted}{HTML}{536870}
+\definecolor{soft}{HTML}{E7EFEB}
+\definecolor{hairline}{HTML}{C9D8D0}
+\definecolor{amber}{HTML}{F1E4CF}
+\pagecolor{paper}\color{ink}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2mm}
+\setlength{\tabcolsep}{2.4mm}
+\renewcommand{\arraystretch}{1.14}
+\setlength{\unitlength}{1mm}
+\newcommand{\bodyfont}{\fontsize{10.6}{13.2}\selectfont\color{ink}}
+\newcommand{\smallfont}{\fontsize{9}{11.2}\selectfont\color{muted}}
+\newcommand{\at}[4]{\put(#1,-#2){\makebox(0,0)[lt]{\begin{minipage}[t]{#3mm}\vspace{0pt}#4\end{minipage}}}}
+\newcommand{\panel}[5]{\put(#1,-#2){\color{#5}\rule[-#4mm]{#3mm}{#4mm}}}
+\newcommand{\sect}[2]{{\fontsize{12}{14}\selectfont\color{teal}\bfseries #1\enspace #2}\par\vspace{0.5mm}{\color{hairline}\hrule height .45pt}\vspace{1.7mm}}
+\newcommand{\figlabel}[1]{{\bfseries\color{teal}#1}}
+\AddToHook{shipout/foreground}{\setlength{\unitlength}{1mm}\begin{picture}(0,0)
+% --- Editorial title band ---
+\panel{0}{0}{297}{64}{ink}
+\at{12}{8}{273}{{\color{mint}\fontsize{9}{11}\selectfont\bfseries DEEP LEARNING PROJECT\hfill EXPLORATORY RESEARCH / A3 POSTER}}
+\at{12}{18}{273}{{\color{paper}\fontsize{29}{32}\selectfont\bfseries Beyond the training set}\par\vspace{1.2mm}{\color{mint}\fontsize{22}{25}\selectfont Cross-domain AF detection with deep learning}}
+\at{12}{47}{270}{{\color{paper}\fontsize{11}{14}\selectfont Audited 12-lead ECG data, compact convolutional networks, calibrated inference and a Streamlit research dashboard.}}
+% --- Headline performance strip ---
+\panel{12}{70}{273}{24}{soft}
+\at{16}{73}{63}{{\fontsize{24}{26}\selectfont\bfseries\color{teal}97.07\%}\par{\fontsize{9}{11}\selectfont ACCURACY}}
+\at{84}{73}{63}{{\fontsize{24}{26}\selectfont\bfseries\color{teal}88.32\%}\par{\fontsize{9}{11}\selectfont AF SENSITIVITY}}
+\at{152}{73}{63}{{\fontsize{24}{26}\selectfont\bfseries\color{teal}99.65\%}\par{\fontsize{9}{11}\selectfont SPECIFICITY}}
+\at{220}{73}{61}{{\fontsize{24}{26}\selectfont\bfseries\color{teal}0.9744}\par{\fontsize{9}{11}\selectfont EXTERNAL AUROC}}
+\at{13}{97}{272}{\smallfont Georgia: 2,220 ECGs. Saved 95\% bootstrap intervals: accuracy 96.31--97.75\%; sensitivity 85.35--91.17\%.}
+% --- Left column ---
+\at{12}{107}{131}{\bodyfont\sect{01}{Background \& objective}
+Atrial fibrillation (AF) is associated with stroke risk and may be unrecognized [1]. ECG models can encounter different patients, acquisition conditions and labels at a new site. We ask whether a model trained on two source domains retains discrimination and useful uncertainty on a third. The task is \textbf{AF versus explicit sinus rhythm (SR)}, not all-arrhythmia diagnosis.}
+\at{12}{146}{131}{\bodyfont\sect{02}{Cohorts \& data integrity}
+{\fontsize{10}{12.4}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrr@{}}
+\toprule\textbf{Domain} & \textbf{SR} & \textbf{AF} & \textbf{Role}\\\midrule
+PTB-XL & 16,687 & 1,484 & Source\\
+Shaoxing & 1,825 & 1,778 & Source\\
+Georgia & 1,715 & 505 & External\\\bottomrule
+\end{tabular*}}
+\vspace{1mm}
+Of 24,027 label-eligible recordings, seven failed signal checks and 26 exact duplicates were removed, leaving \textbf{23,994 ECGs} [2,3]. Source partitions separate training (15,252), validation (2,173), temperature calibration (1,095), threshold calibration (1,078) and source testing (2,176).}
+\at{12}{207}{131}{\bodyfont\sect{03}{Deep learning \& evaluation protocol}
+Signals are ordered into 12 canonical leads, converted to mV and resampled to \textbf{100 Hz for 10 seconds}. Per-lead normalization uses training data only. Compact ResNet and InceptionTime-style CNNs are compared with empirical risk minimization, class-conditional feature alignment and CORAL [4,6]. Source validation selects ResNet with alignment weight 0.05. Three seeds (42, 202, 3407) form the exported ensemble.}
+\panel{12}{252}{131}{10}{soft}
+\at{15}{254}{125}{{\fontsize{10}{12}\selectfont\bfseries\color{teal}12 $\times$ 1,000 input $\rightarrow$ 1D CNN $\rightarrow$ 128 features $\rightarrow$ AF logit}}
+\at{12}{266}{131}{\includegraphics[width=131mm,height=29mm,keepaspectratio]{figures/training.pdf}}
+\at{12}{297}{131}{\smallfont\figlabel{Training.} AdamW, batch 256, cosine decay and early stopping; the selected seed-42 checkpoint is epoch 12.}
+\at{12}{310}{131}{\bodyfont\sect{04}{Calibration \& software implementation}
+Source-only temperature scaling [5] precedes probability averaging. A frozen threshold of \textbf{0.6211} gives the AF/SR label; predictive entropy flags review. The source goal of 97\% sensitivity at 95\% specificity per domain was \textbf{not met} (minimum sensitivity: 95.31\%).
+
+The \textbf{Streamlit app} validates 100/500 Hz numerical ECG uploads and displays waveforms, predictions, model comparisons, calibration and robustness analyses. Thirteen software checks passed, including both exported ensembles and upload-to-result inference.}
+% --- Right column ---
+\at{153}{107}{132}{\bodyfont\sect{05}{Results / Georgia external evaluation}}
+\at{153}{119}{132}{\includegraphics[width=132mm,height=53mm,keepaspectratio]{figures/discrimination.pdf}}
+\at{153}{175}{132}{\smallfont\figlabel{A / Discrimination.} AUROC 0.9744; average precision 0.9626. The ROC marker is the frozen cutoff; the PR baseline is AF prevalence (22.75\%).}
+\at{153}{192}{132}{\includegraphics[width=132mm,height=47mm,keepaspectratio]{figures/domain_transfer.pdf}}
+\at{153}{242}{132}{\smallfont\figlabel{B / Transfer.} AF sensitivity falls from 93.29\% (PTB-XL) and 99.44\% (Shaoxing) to 88.32\% (Georgia). Cohort differences prevent causal attribution.}
+\at{153}{259}{132}{\bodyfont\sect{06}{Comparative results}}
+\at{153}{271}{132}{\includegraphics[width=132mm,height=44mm,keepaspectratio]{figures/model_comparison.pdf}}
+\at{153}{317}{132}{\smallfont\figlabel{C / Model comparison.} Georgia results at each model's frozen source-selected cutoff. Axes are zoomed; values are labeled. Teal marks the selected ensemble.}
+\at{153}{330}{132}{\bodyfont\sect{07}{Interpretation \& limitations}
+Repeated Georgia evaluation is \textbf{exploratory} after prior-result inspection. Only one external rotation is complete; Shaoxing/Georgia IDs are patient proxies, and near duplicates may remain. Alignment does not dominate all metrics. Intervals condition on fitted models (200 cluster-bootstrap replicates). Independent cohorts and prospective workflow validation are required.}
+% --- Full-width conclusion and references ---
+\panel{12}{369}{273}{17}{ink}
+\at{16}{373}{35}{{\fontsize{10}{12}\selectfont\color{mint}\bfseries CONCLUSION}}
+\at{54}{372}{226}{{\fontsize{11}{13.5}\selectfont\color{paper}Strong external ranking and a working research application were achieved, but the AF sensitivity gap remains. The next step is independent validation, not a claim of clinical readiness.}}
+\at{12}{390}{273}{{\fontsize{8}{9.5}\selectfont\color{teal}\bfseries SELECTED REFERENCES / sources and method foundations}}
+\at{12}{397}{89}{{\fontsize{7.4}{9.2}\selectfont\color{muted}
+[1] CDC. \href{https://www.cdc.gov/heart-disease/about/atrial-fibrillation.html}{About Atrial Fibrillation} (2024).\par
+[2] Wagner et al. \href{https://physionet.org/content/ptb-xl/1.0.3/}{PTB-XL, v1.0.3}. PhysioNet (2022).}}
+\at{106}{397}{89}{{\fontsize{7.4}{9.2}\selectfont\color{muted}
+[3] PhysioNet. \href{https://physionet.org/content/challenge-2021/1.0.3/}{Challenge 2021, v1.0.3}; cohort provenance.\par
+[4] Sun \& Saenko. \href{https://arxiv.org/abs/1607.01719}{Deep CORAL} (2016).}}
+\at{200}{397}{85}{{\fontsize{7.4}{9.2}\selectfont\color{muted}
+[5] Guo et al. \href{https://proceedings.mlr.press/v70/guo17a.html}{On Calibration of Modern Neural Networks}. ICML (2017).\par
+[6] Fawaz et al. \href{https://arxiv.org/abs/1909.04939}{InceptionTime}. DMKD (2020).}}
+\at{12}{414}{273}{{\fontsize{7}{8}\selectfont\color{muted}Latest run: 20261027\_205834. Retained-cohort counts and plots use saved project artifacts. Research demonstration; no clinical utility claim.}}
+\end{picture}}
+\begin{document}\null\end{document}

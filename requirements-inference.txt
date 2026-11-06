@@ -1,0 +1,4 @@
+-r requirements-dashboard.txt
+torch>=2.3,<3
+scipy>=1.11,<2
+wfdb==4.3.0

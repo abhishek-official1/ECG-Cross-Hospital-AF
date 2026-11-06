@@ -1,0 +1,14 @@
+:root {--ink:#142c3b;--teal:#087e83;--paper:#f6f7f4;--muted:#536573;}
+.stApp {background:var(--paper);color:var(--ink);}
+[data-testid="stSidebar"] {background:#eaf0ed;border-right:1px solid #d5dfd9;}
+.block-container {max-width:1320px;padding-top:2.5rem;padding-bottom:3rem;}
+h1 {font-size:clamp(2rem,4vw,3.6rem)!important;letter-spacing:-.045em;line-height:1.08!important;color:var(--ink);}
+h2,h3 {letter-spacing:-.025em;color:var(--ink);}
+[data-testid="stMetric"] {background:#edf2ee;border:1px solid #d9e2dd;padding:1rem 1.2rem;border-radius:8px;}
+[data-testid="stMetricLabel"] {color:var(--muted);}
+[data-testid="stMetricValue"] {color:var(--teal);font-variant-numeric:tabular-nums;}
+.eyebrow {font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.65rem;}
+.deck {max-width:850px;font-size:1.15rem;color:var(--muted);line-height:1.6;margin-bottom:1.8rem;}
+[data-testid="stDataFrame"] {border:1px solid #d9e2dd;border-radius:6px;}
+@media(max-width:640px){.block-container{padding:1.4rem 1rem;}[data-testid="stMetric"]{padding:.8rem;}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
