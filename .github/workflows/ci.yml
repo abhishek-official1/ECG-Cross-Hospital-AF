@@ -1,0 +1,22 @@
+name: Checks
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pip install 'ruff>=0.14,<1'
+      - name: Lint for syntax and undefined names
+        run: ruff check --select E9,F63,F7,F82 dashboard_data.py streamlit_app.py tests
+      - name: Dashboard tests
+        run: python -m pytest -q tests/test_dashboard.py

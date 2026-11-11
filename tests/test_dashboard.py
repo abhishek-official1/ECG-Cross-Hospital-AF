@@ -21,6 +21,7 @@ def test_real_results_and_operating_point():
     run = runs[0]
     assert run.name.endswith("205834")
     frame = data.predictions(run, "Georgia_selected_ensemble", "external")
+    # Saved run 20261027_205834: the poster's Georgia confusion counts (SR, AF order).
     assert data.confusion(frame, float(frame.threshold.iloc[0])) == [[1709, 6], [59, 446]]
     metrics = data.operating_metrics(run)
     assert set(metrics.operating_point) == {"source_sensitivity", "youden"}
@@ -70,6 +71,7 @@ def test_stress_uses_the_tested_member_not_the_ensemble():
     assert frame.tag.nunique()==1
     assert frame.tag.iloc[0]==data.metadata(run)["members"][0]["tag"]
     clean=frame[frame.condition=="clean"].iloc[0]
+    # Saved stress-comparison table for the selected member: 0.968018..., not ensemble 0.970720....
     assert clean.accuracy==pytest.approx(.968018018018018)
     assert clean.accuracy!=pytest.approx(.9707207207207207)
 

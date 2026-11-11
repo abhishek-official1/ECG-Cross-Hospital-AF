@@ -1,0 +1,124 @@
+# Cross-hospital ECG AF study: full documentation
+
+Source and dashboard for an exploratory atrial-fibrillation ECG study.
+
+---
+
+## Source: README.md
+
+# Beyond the training set
+
+### Cross-hospital atrial fibrillation detection from 12-lead ECGs
+
+> **The question:** If a model learns from ECGs at two source sites, what happens when it meets recordings from a third?
+
+[Read the experiment](#the-study) · [Run the dashboard](#run-locally) · [View the poster](poster/DL_Project_poster.pdf)
+
+![A3 research poster showing the cohort, model, and Georgia evaluation](poster/poster_preview.png)
+
+## The study
+
+This project studies **atrial fibrillation (AF) versus explicit sinus rhythm (SR)**. PTB-XL and Shaoxing supply the training and source evaluation cohorts; Georgia is the external pilot cohort. The pipeline audits labels and duplicate signals, compares compact 1D convolutional networks, calibrates predictions on source data, and exports a research dashboard.
+
+| Georgia external evaluation | Saved result |
+| :-- | --: |
+| Recordings | 2,220 |
+| Accuracy | 97.07% |
+| AF sensitivity | 88.32% |
+| Missed AF recordings | 59 of 505 |
+| AUROC | 0.9744 |
+
+These are results from the saved October 2026 exploratory run, **not a new validation on this GitHub copy**. The 97.07% accuracy needs the 88.32% sensitivity beside it: 59 AF recordings were classified as SR. The source sensitivity goal was also unmet. Only one external domain was evaluated, and the later Georgia run followed inspection of an earlier result. See the [poster](poster/DL_Project_poster.pdf) for the cohort counts, protocol, and limitations.
+
+## What is here
+
+| Path | Purpose |
+| :-- | :-- |
+| [`ECG_CrossHospital_Public.ipynb`](ECG_CrossHospital_Public.ipynb) | Clean copy of the research pipeline; saved outputs and widget state removed |
+| [`streamlit_app.py`](streamlit_app.py), [`dashboard_data.py`](dashboard_data.py) | Six-section dashboard and data adapters |
+| [`poster/`](poster/) | Research poster, LaTeX source, and vector figures |
+| [`tests/test_dashboard.py`](tests/test_dashboard.py) | Upload validation checks and local-bundle integration checks |
+
+The original ECG waveforms, derived patient-level records, prediction tables, model weights, run bundles, local environment, and presentation working files stay outside the repository. They are not needed to read the code or poster. The dashboard needs a locally generated run bundle to show plots or make predictions.
+
+## Run locally
+
+Use Python 3.11 or newer. To install the dashboard and start it on Windows:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dashboard.txt
+.\.venv\Scripts\python.exe -m streamlit run streamlit_app.py
+```
+
+`run_dashboard.cmd` is a Windows shortcut that creates `.venv` and installs the inference dependencies. On other platforms, install `requirements-inference.txt` in your environment and run `python -m streamlit run streamlit_app.py`.
+
+On a fresh clone, the app opens with a note about the absent experiment bundle. To use the six research pages, generate a run with the public notebook and place its `ecg_results_*` directory beside `streamlit_app.py`. For live ECG inference, the run must include its exported `bundle/` files and weights. The notebook downloads public source datasets at runtime; check the source licenses and allow for substantial download and compute time.
+
+### ECG upload format
+
+The prediction page accepts a NumPy `.npy` array of 12 leads × 10 seconds: `(12, 1000)` at 100 Hz or `(12, 5000)` at 500 Hz. Voltages are in mV. Rows must be ordered `I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6`. The app rejects nonnumeric, flat, nonfinite, or implausible signals and limits uploads to 2 MB. It processes uploads in memory.
+
+## Check the code
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest tests/test_dashboard.py -q
+```
+
+Upload validation tests run without research artifacts. Tests that check saved metrics, dashboard pages, or inference require the two local experiment bundles and skip on a fresh clone. This separation keeps the test command useful without distributing patient-level data or checkpoints.
+
+## Reading the result
+
+The task is AF versus explicit SR, not diagnosis across all rhythms. Georgia and Shaoxing patient identifiers are record-level proxies, so near duplicates may remain. Bootstrap intervals are conditional on fitted models. The research dashboard and poster are for study and demonstration; they have **no clinical decision use**.
+
+Dataset provenance and method references are listed in the [poster](poster/DL_Project_poster.pdf). The public pipeline records exact dataset versions and download locations in its source.
+
+## Contributing and license
+
+The [contribution guide](CONTRIBUTING.md) explains how to test changes without local ECG bundles. Project code and documentation are under the [MIT License](LICENSE). The original ECG datasets keep their own terms.
+
+---
+
+## Source: CONTRIBUTING.md
+
+# Contributing to the ECG study
+
+This repository publishes the analysis pipeline and dashboard source. The ECG recordings and trained weights stay local.
+
+For dashboard changes, install the development requirements and run:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pytest -q tests/test_dashboard.py
+```
+
+Tests that require saved experiment bundles skip on a fresh clone. Use synthetic 12-lead arrays for new public tests. Do not commit raw ECGs, record-level tables, prediction files, or checkpoints. If you change a metric or cohort definition, show the source run and the matching denominator in the pull request; keep exploratory Georgia results labeled as exploratory.
+
+Report ordinary bugs with a small reproduction. See [SECURITY.md](SECURITY.md) for a private security report.
+
+---
+
+## Source: CHANGELOG.md
+
+# Changelog
+
+## [Unreleased]
+
+- External clinical validation and a fresh independent cohort remain open research work.
+
+## [0.1.0] - 2026-11-11
+
+- Published a source-only ECG notebook, dashboard source, and research poster.
+- Documented the saved October 2026 result and its sensitivity and cohort limits.
+- Excluded ECG recordings, patient-level tables, run bundles, and model weights.
+
+---
+
+## Source: SECURITY.md
+
+# Security policy
+
+If the repository's Security tab offers private vulnerability reporting, use it. Otherwise, open an issue asking for a private contact channel **without including exploit details, credentials, or private data**.
+
+Include the affected file or feature, a small reproduction, and the impact in the private report. Please allow time for a fix before publishing technical details. For ordinary bugs, use a regular issue with synthetic or public inputs.

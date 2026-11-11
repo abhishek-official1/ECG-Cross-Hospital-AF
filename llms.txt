@@ -1,0 +1,14 @@
+# Cross-hospital ECG AF study
+> Source and dashboard for an exploratory atrial-fibrillation ECG study.
+
+## Documentation
+- [README](README.md): Purpose, setup, use, and limitations
+- [Contributing](CONTRIBUTING.md): Development checks and data boundaries
+- [Changelog](CHANGELOG.md): Source release history
+
+## Research source
+- [Source notebook](<ECG_CrossHospital_Public.ipynb>): Analysis code without saved results
+
+## Optional
+- [Security](SECURITY.md): Private vulnerability reporting
+- [License](LICENSE): MIT license for project code and documentation

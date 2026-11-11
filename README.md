@@ -65,3 +65,7 @@ Upload validation tests run without research artifacts. Tests that check saved m
 The task is AF versus explicit SR, not diagnosis across all rhythms. Georgia and Shaoxing patient identifiers are record-level proxies, so near duplicates may remain. Bootstrap intervals are conditional on fitted models. The research dashboard and poster are for study and demonstration; they have **no clinical decision use**.
 
 Dataset provenance and method references are listed in the [poster](poster/DL_Project_poster.pdf). The public pipeline records exact dataset versions and download locations in its source.
+
+## Contributing and license
+
+The [contribution guide](CONTRIBUTING.md) explains how to test changes without local ECG bundles. Project code and documentation are under the [MIT License](LICENSE). The original ECG datasets keep their own terms.
