@@ -1,14 +1,27 @@
 # Beyond the training set
 
-### Cross-hospital atrial fibrillation detection from 12-lead ECGs
+**Atrial fibrillation detection across hospitals, using 12-lead electrocardiograms**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version: 0.1.0](https://img.shields.io/badge/version-0.1.0-56719A.svg)](CHANGELOG.md)
+[![Checks](https://github.com/abhishek-official1/ECG-Cross-Hospital-AF/actions/workflows/ci.yml/badge.svg)](https://github.com/abhishek-official1/ECG-Cross-Hospital-AF/actions/workflows/ci.yml)
+
+## 🫀 What this project asks
+
+**Atrial fibrillation (AF)** is an irregular heart rhythm that starts in the upper chambers of the heart. It matters because it is linked to a higher risk of stroke. An **electrocardiogram (ECG)** records the heart's electrical activity; a 12-lead ECG views that activity from several angles. This project asks whether a computer model trained to distinguish AF from **sinus rhythm (SR)** in recordings from two sources still works on recordings from a third. [The CDC explains AF and its health effects](https://www.cdc.gov/heart-disease/about/atrial-fibrillation.html).
 
 > **The question:** If a model learns from ECGs at two source sites, what happens when it meets recordings from a third?
+
+The project draws on three public ECG collections: **PTB-XL** and **Chapman-Shaoxing** for model development and source evaluation, and **Georgia** for an external pilot evaluation. Their separate origins make Georgia a useful test of how well the model travels beyond its training sources. These collections are described in the [PhysioNet Challenge data overview](https://physionet.org/content/challenge-2021/1.0.3/).
+
+The saved exploratory run classified **2,220 Georgia recordings** with **97.07% accuracy**. It also missed **59 of 505 AF recordings**. That missed-AF count is part of the result, not a footnote: this is a research demonstration, **not a clinical diagnostic tool**. The [study details](#the-study) explain the evaluation limits.
 
 [Read the experiment](#the-study) · [Run the dashboard](#run-locally) · [View the poster](poster/DL_Project_poster.pdf)
 
 ![A3 research poster showing the cohort, model, and Georgia evaluation](poster/poster_preview.png)
 
-## The study
+<a id="the-study"></a>
+## 🔬 The study
 
 This project studies **atrial fibrillation (AF) versus explicit sinus rhythm (SR)**. PTB-XL and Shaoxing supply the training and source evaluation cohorts; Georgia is the external pilot cohort. The pipeline audits labels and duplicate signals, compares compact 1D convolutional networks, calibrates predictions on source data, and exports a research dashboard.
 
@@ -22,7 +35,7 @@ This project studies **atrial fibrillation (AF) versus explicit sinus rhythm (SR
 
 These are results from the saved October 2026 exploratory run, **not a new validation on this GitHub copy**. The 97.07% accuracy needs the 88.32% sensitivity beside it: 59 AF recordings were classified as SR. The source sensitivity goal was also unmet. Only one external domain was evaluated, and the later Georgia run followed inspection of an earlier result. See the [poster](poster/DL_Project_poster.pdf) for the cohort counts, protocol, and limitations.
 
-## What is here
+## 🗂️ What is here
 
 | Path | Purpose |
 | :-- | :-- |
@@ -33,7 +46,8 @@ These are results from the saved October 2026 exploratory run, **not a new valid
 
 The original ECG waveforms, derived patient-level records, prediction tables, model weights, run bundles, local environment, and presentation working files stay outside the repository. They are not needed to read the code or poster. The dashboard needs a locally generated run bundle to show plots or make predictions.
 
-## Run locally
+<a id="run-locally"></a>
+## 💻 Run locally
 
 Use Python 3.11 or newer. To install the dashboard and start it on Windows:
 
@@ -47,11 +61,11 @@ python -m venv .venv
 
 On a fresh clone, the app opens with a note about the absent experiment bundle. To use the six research pages, generate a run with the public notebook and place its `ecg_results_*` directory beside `streamlit_app.py`. For live ECG inference, the run must include its exported `bundle/` files and weights. The notebook downloads public source datasets at runtime; check the source licenses and allow for substantial download and compute time.
 
-### ECG upload format
+### 📈 ECG upload format
 
 The prediction page accepts a NumPy `.npy` array of 12 leads × 10 seconds: `(12, 1000)` at 100 Hz or `(12, 5000)` at 500 Hz. Voltages are in mV. Rows must be ordered `I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6`. The app rejects nonnumeric, flat, nonfinite, or implausible signals and limits uploads to 2 MB. It processes uploads in memory.
 
-## Check the code
+## 🧪 Check the code
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
@@ -60,12 +74,12 @@ The prediction page accepts a NumPy `.npy` array of 12 leads × 10 seconds: `(12
 
 Upload validation tests run without research artifacts. Tests that check saved metrics, dashboard pages, or inference require the two local experiment bundles and skip on a fresh clone. This separation keeps the test command useful without distributing patient-level data or checkpoints.
 
-## Reading the result
+## 📖 Reading the result
 
 The task is AF versus explicit SR, not diagnosis across all rhythms. Georgia and Shaoxing patient identifiers are record-level proxies, so near duplicates may remain. Bootstrap intervals are conditional on fitted models. The research dashboard and poster are for study and demonstration; they have **no clinical decision use**.
 
 Dataset provenance and method references are listed in the [poster](poster/DL_Project_poster.pdf). The public pipeline records exact dataset versions and download locations in its source.
 
-## Contributing and license
+## 📄 Contributing and license
 
 The [contribution guide](CONTRIBUTING.md) explains how to test changes without local ECG bundles. Project code and documentation are under the [MIT License](LICENSE). The original ECG datasets keep their own terms.
